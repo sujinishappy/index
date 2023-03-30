@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        body{margin: 0; padding: 0; }
+    a{color:white; text-decoration: none;}
+    a:hover{color:red important;}
+    header{overflow:hidden; transition:all 1s; height : 100px; background-color: rgba(0, 0, 0, 0.5); position: fixed; top:0; left: 0; width: 100%;}
+
+    header.over{background-color: white;}
+    header.over h1 a{color: black;}
+    header.down{top:-100px;}
+    header.up{top:0px;}
+    /*header.over h1 a:hover{color: red;}*/
+
+    section{height: 100vh; }
+    section:nth-of-type(1){background-image: url(image/bg1.jpg); background-repeat: no-repeat;     background-size: cover;}
+    section:nth-of-type(odd){background-color: rgb(244, 244, 231);} /*짝수 even 홀수 */
+
+    #content{
+        justify-content: center;
+        display: flex;
+        padding:20px;
+    }
+    #content img{
+        padding: 20px;
+    }
+
+
+    #second{
+        text-align: center;
+    }
+    button{
+        display: flex;
+        justify-content: center;
+        background-color: bisque;
+        border-radius: 10px;
+        font-size: 30px;
+        border-color: bisque;
+        cursor: pointer;
+    }
+    .zoom {
+        cursor: pointer;
+        transition: transform 3s;
+    }
+
+    .zoom:hover {
+        transform: scale(1.1);
+        z-index: 9999;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    .zoom:hover::-webkit-scrollbar {
+        display: none;
+    }
+
+    #scroll-to-top-btn{
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        background-color: rgb(79, 71, 59);
+        border: none;
+        color: white;
+        padding: 10px;
+        font-size: 18px;
+    }
+
+    footer{background-color: gray; height: 200px;}
+    
+    </style>
+
+</head>
+
+<body>
+    <header id="header">
+        <h1><a id="a" href="#">BULY</a></h1>
+    </header>
+    <section id="first">
+
+    </section>
+    
+    <section id="second">
+        <img id="myImage" src="image/bb1.jpg" width="550">
+        <button onclick="changeImage()">Change</button>
+
+    </section>
+
+    <button id="scroll-to-top-btn">top</button>
+
+    <section id="third">
+        <div id="content">
+            <img class="zoom" width="350px" src="image/b1.jpg">
+            <img class="zoom" width="350px" src="image/b2.jpg">
+            <img class="zoom" width="350px" src="image/b3.jpg">
+        </div>
+    </section>
+    <footer>
+        
+    </footer>
+
+    <script>
+        var myHeader = document.getElementById("header"); //변수 설정
+        //마우스 이벤트
+        //console.log(document.getElementById("header"));
+        myHeader.onmouseover = function(){
+            console.log(this); //this는 이벤트가 걸린 대상을 의미. 지금은 myHeader와 같은 의미
+            console.log(myHeader);
+            this.classList.add("over")
+            //this.style.backgroundColor = "white";
+        }
+        myHeader.onmouseout=function(){
+            this.classList.remove("over")
+            //console.log("마우스 아웃");
+            //this.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+        }
+        //스크롤 이벤트
+        //윈도우가.이벤트 듣는 이로 추가되었다. (스크롤을 하면, 펑션을 행함)
+        window.addEventListener("scroll", function(){
+            console.log(window.scrollY);
+            if(window.scrollY>200){
+                console.log("200 이상")
+                //myHeader.style.height=0+"px"; 
+                myHeader.style.top = -100 + "px";
+                //myHeader.classList.add("down")
+                //myHeader.classList.remove("up")
+            }else{
+                console.log("200 이하")
+                //myHeader.style.height=100+"px";
+                myHeader.style.top = 0 + "px";
+                //myHeader.classList.add("up")
+                //myHeader.classList.remove("down")
+            }
+        });
+
+        const zoomImg = document.querySelector('.zoom');
+        const windowHeight = window.innerHeight;
+
+        zoomImg.addEventListener('click', function() {
+        zoomImg.classList.add('active');
+        });
+
+        document.addEventListener('click', function(event) {
+        if (!zoomImg.contains(event.target)) {
+            zoomImg.classList.remove('active');
+        }
+        });
+
+        zoomImg.addEventListener('mousemove', function(event) {
+        const mouseX = event.clientX;
+        const mouseY = event.clientY;
+        const imgLeft = zoomImg.getBoundingClientRect().left;
+        const imgTop = zoomImg.getBoundingClientRect().top;
+        const imgWidth = zoomImg.offsetWidth;
+        const imgHeight = zoomImg.offsetHeight;
+
+        if (mouseX < imgLeft || mouseX > imgLeft + imgWidth ||
+            mouseY < imgTop || mouseY > imgTop + imgHeight) {
+            zoomImg.classList.remove('active');
+        }
+        });
+
+		function changeImage() {
+			var image = document.getElementById('myImage');
+			if (image.src.match("image/bb1.jpg")) {
+				image.src = "image/bb2.jpg";
+			} else if(image.src.match("image/bb2.jpg")){
+				image.src = "image/bb3.jpg";
+			}
+            else if(image.src.match("image/bb3.jpg")){
+                image.src = "image/bb1.jpg";
+            }
+		}
+
+
+        var scrollToTopBtn = document.getElementById("scroll-to-top-btn");
+
+        // 버튼 클릭 시 페이지 맨 위로 스크롤 이동
+        scrollToTopBtn.addEventListener("click", function() {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+        });
+    </script>
+</body>
+</html>
